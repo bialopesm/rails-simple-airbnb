@@ -1,0 +1,22 @@
+<h1>Available Flats</h1>
+<%= link_to 'Add New Flat', new_flat_path, class: 'btn btn-primary' %>
+
+<%= form_with(url: flats_path, method: :get, local: true) do |form| %>
+  <%= form.text_field :query, value: params[:query], placeholder: 'Search for flats' %>
+  <%= form.submit 'Search' %>
+<% end %>
+<div class="cards">
+  <% @flats.each do |flat| %>
+    <div class="flats-card">
+      <h2><%= flat.name %></h2>
+      <p><%= flat.address %></p>
+      <p><%= flat.description %></p>
+      <p>Price per night: $<%= flat.price_per_night %></p>
+      <p>Number of guests: <%= flat.number_of_guests %></p>
+
+      <%= link_to 'More info', flat_path(flat), class: 'btn btn-info' %>
+      <%= link_to 'Edit', edit_flat_path(flat), class: 'btn btn-warning' %>
+      <%= link_to 'Remove', flat_path(flat), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"}, class: 'btn btn-danger' %>
+    </div>
+</div>
+<% end %>
