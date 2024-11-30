@@ -1,46 +1,43 @@
 class FlatsController < ApplicationController
   def index
-    if params[:query].present?
-      @flats = Flat.where("name LIKE ?", "%#{params[:query]}%")
+    if params[:search].present? && params[:search][:query].present?
+      query = params[:search][:query].downcase
+      @flats = Flat.where("LOWER(name) LIKE ?", "%#{query}%")
     else
       @flats = Flat.all
     end
   end
 
+
+  def show
+    @flat= Flat.find(params[:id])
+  end
+
   def new
-    @flats = Flat.new
+    @flat = Flat.new
   end
 
   def create
     @flat = Flat.new(flat_params)
-    if @flat.save
-      redirect_to flats_path(@flat)
-    else
-      render :new
-    end
+    @flat.save
+
+    redirect_to flats_path(@flat)
   end
 
   def edit
-    @flats = Flat.find(params[:id])
+    @flat = Flat.find(params[:id])
   end
 
   def update
-    @flats = Flat.find(params[:id])
-    if @flat.update(flat_params)
-      redirect_to flat_path(@flat)
-    else
-      render :edit
-    end
-  end
-
-  def show
     @flat = Flat.find(params[:id])
+    @flat.update(flat_params)
+    redirect_to flat_path(@flat)
   end
 
   def destroy
     @flat = Flat.find(params[:id])
     @flat.destroy
-    redirect_to flats_path
+    redirect_to flats_path, status: :see_other
   end
 
   private
